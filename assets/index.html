@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tergar Praxistag Quiz</title>
+    <style>
+      @font-face {
+        font-family: "Nunito Sans";
+        src: url("./assets/NunitoSans-Regular.ttf") format("truetype");
+        font-weight: 400;
+      }
+
+      @font-face {
+        font-family: "Nunito Sans";
+        src: url("./assets/NunitoSans-Bold.ttf") format("truetype");
+        font-weight: 700;
+      }
+
+      @font-face {
+        font-family: "Source Serif Pro";
+        src: url("./assets/SourceSerifPro-Regular.ttf") format("truetype");
+        font-weight: 400;
+      }
+
+      :root {
+        --gold: #e3a026;
+        --deep: #424a58;
+        --text: #424a58;
+        --muted: #67748a;
+        --line: #c1c7d1;
+        --paper: #ffffff;
+        --soft: #f9f9fb;
+        --sky-a: #f2d4a8;
+        --sky-b: #fbe0c9;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--text);
+        font-family: "Nunito Sans", Arial, sans-serif;
+        background: #ffffff;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .shell {
+        width: min(980px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 18px 0 36px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 74px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(66, 74, 88, 0.12);
+      }
+
+      .logo {
+        width: min(360px, 50vw);
+        min-width: 130px;
+        display: block;
+      }
+
+      .event-details {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text);
+        font-size: 14px;
+      }
+
+      .event-pill {
+        border: 1px solid rgba(66, 74, 88, 0.16);
+        border-radius: 999px;
+        padding: 8px 14px;
+        background: #ffffff;
+        white-space: nowrap;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 0.82fr);
+        align-items: center;
+        gap: 28px;
+        padding: 34px 0 30px;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--gold);
+        font-weight: 700;
+        letter-spacing: 0;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 620px;
+        color: var(--text);
+        font-family: "Source Serif Pro", Georgia, serif;
+        font-size: clamp(40px, 5.6vw, 62px);
+        font-weight: 400;
+        line-height: 1.08;
+        letter-spacing: 0;
+      }
+
+      .subline {
+        max-width: 590px;
+        margin: 16px 0 0;
+        color: var(--text);
+        font-size: 18px;
+        line-height: 1.5;
+      }
+
+      .start-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .primary,
+      .secondary,
+      .option,
+      .ghost {
+        min-height: 46px;
+        border: 0;
+        border-radius: 6px;
+        padding: 13px 20px;
+        cursor: pointer;
+      }
+
+      .primary {
+        color: white;
+        background: var(--gold);
+        font-weight: 700;
+      }
+
+      .primary:hover,
+      .primary:focus-visible {
+        background: var(--gold);
+        outline: 3px solid rgba(227, 159, 36, 0.28);
+      }
+
+      .secondary,
+      .ghost {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(66, 74, 88, 0.18);
+        font-weight: 700;
+      }
+
+      .hero-image {
+        width: 100%;
+        aspect-ratio: 1.35;
+        overflow: hidden;
+        border-radius: 4px;
+        border: 1px solid rgba(66, 74, 88, 0.12);
+        background: #ffffff;
+      }
+
+      .hero-image img,
+      .question-image img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .hero-image img {
+        object-fit: cover;
+        object-position: 38% center;
+      }
+
+      .quiz {
+        display: none;
+        width: min(900px, 100%);
+        margin: 0 auto;
+        padding-top: 26px;
+      }
+
+      .quiz.is-active {
+        display: grid;
+        gap: 0;
+      }
+
+      .question-image {
+        aspect-ratio: 1600 / 520;
+        height: auto;
+        min-height: 0;
+        overflow: hidden;
+        border-radius: 4px 4px 0 0;
+        background: #ffffff;
+        border: 1px solid rgba(66, 74, 88, 0.12);
+        border-bottom: 0;
+        position: relative;
+      }
+
+      .question-image img {
+        object-fit: cover;
+        object-position: center;
+      }
+
+      .question-image.logo-card {
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: var(--gold);
+      }
+
+      .question-image.logo-card img {
+        width: min(82%, 440px);
+        height: auto;
+        object-fit: contain;
+      }
+
+      .panel {
+        min-height: 0;
+        padding: 30px;
+        border-radius: 0 0 4px 4px;
+        background: #ffffff;
+        border: 1px solid rgba(66, 74, 88, 0.12);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .progress {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .quiz-title {
+        margin: 0 0 18px;
+        color: var(--text);
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .category {
+        color: var(--gold);
+      }
+
+      h2 {
+        margin: 24px 0 16px;
+        color: var(--text);
+        font-family: "Source Serif Pro", Georgia, serif;
+        font-size: clamp(28px, 3.2vw, 40px);
+        font-weight: 400;
+        line-height: 1.12;
+        letter-spacing: 0;
+      }
+
+      .options {
+        display: grid;
+        gap: 10px;
+        margin: 4px 0 0;
+      }
+
+      .option {
+        width: 100%;
+        color: var(--text);
+        background: var(--paper);
+        border: 1px solid rgba(103, 116, 138, 0.24);
+        text-align: left;
+        line-height: 1.32;
+      }
+
+      .option:hover,
+      .option:focus-visible {
+        outline: 3px solid rgba(227, 159, 36, 0.28);
+      }
+
+      .option.is-correct {
+        border-color: rgba(227, 159, 36, 0.72);
+        background: rgba(242, 212, 168, 0.42);
+      }
+
+      .option.is-wrong {
+        border-color: rgba(227, 159, 36, 0.72);
+        background: rgba(251, 224, 201, 0.42);
+      }
+
+      .answer {
+        display: none;
+        margin-top: 18px;
+        padding: 18px;
+        border-radius: 4px;
+        background: var(--soft);
+        border: 1px solid rgba(103, 116, 138, 0.18);
+      }
+
+      .answer.is-visible {
+        display: block;
+      }
+
+      .answer-title {
+        margin: 0 0 6px;
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      .answer p {
+        margin: 0;
+        line-height: 1.42;
+      }
+
+      .practice {
+        margin-top: 12px;
+        color: var(--text);
+        font-family: "Source Serif Pro", Georgia, serif;
+        font-size: 20px;
+      }
+
+      .practice:empty {
+        display: none;
+      }
+
+      .source {
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.35;
+      }
+
+      .source:empty {
+        display: none;
+      }
+
+      .actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: auto;
+        padding-top: 20px;
+      }
+
+      .result {
+        display: none;
+        padding: 0;
+        border-radius: 4px;
+        background: #ffffff;
+        border: 1px solid rgba(66, 74, 88, 0.12);
+        overflow: hidden;
+      }
+
+      .result.is-active {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+      }
+
+      .result-visual {
+        min-height: 420px;
+        background:
+          linear-gradient(rgba(66, 74, 88, 0.08), rgba(66, 74, 88, 0.08)),
+          url("./assets/brand-background.jpg") center / cover no-repeat;
+      }
+
+      .result-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 44px;
+      }
+
+      .scoreline {
+        margin: 0 0 14px;
+        color: var(--gold);
+        font-weight: 700;
+      }
+
+      .result h2 {
+        margin: 0;
+        color: var(--text);
+        font-family: "Source Serif Pro", Georgia, serif;
+        font-size: clamp(38px, 5vw, 58px);
+        font-weight: 400;
+        line-height: 1.08;
+      }
+
+      .result-copy {
+        max-width: 430px;
+        margin: 18px 0 0;
+        color: var(--text);
+        font-size: 18px;
+        line-height: 1.5;
+      }
+
+      @media (max-width: 860px) {
+        .shell {
+          width: min(100% - 20px, 680px);
+          padding-top: 14px;
+        }
+
+        .topbar,
+        .hero,
+        .quiz,
+        .result.is-active {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          display: grid;
+        }
+
+        .logo {
+          width: min(100%, 390px);
+        }
+
+        .event-details {
+          flex-wrap: wrap;
+        }
+
+        .hero {
+          gap: 18px;
+        }
+
+        .hero-image {
+          aspect-ratio: 1.8;
+        }
+
+        .question-image {
+          aspect-ratio: 1600 / 560;
+        }
+
+        .panel,
+        .result-content {
+          padding: 18px;
+        }
+
+        .result-visual {
+          min-height: 260px;
+        }
+
+        h1 {
+          font-size: clamp(38px, 13vw, 58px);
+        }
+
+        .subline {
+          font-size: 18px;
+        }
+
+        .actions {
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar" aria-label="Kopfbereich">
+        <img class="logo" src="./assets/tergar-10-logo.svg" alt="Tergar Meditationsgemeinschaft 10 Jahre">
+        <div class="event-details" aria-label="Veranstaltungsdaten">
+          <span class="event-pill">Community Praxistag</span>
+          <span class="event-pill">28. Juni 2026</span>
+          <span class="event-pill">Online</span>
+        </div>
+      </header>
+
+      <section class="hero" id="intro">
+        <div>
+          <p class="eyebrow">10 Jahre Verbundenheit & Inspiration</p>
+          <h1>Tergar Quiz zum Community Praxistag</h1>
+          <p class="subline">Ein interaktiver Rückblick auf zehn Jahre Tergar im deutschsprachigen Raum: gemeinsames Üben, lebendige Begegnungen und kleine Aha-Momente zur Praxis.</p>
+          <div class="start-row">
+            <button class="primary" id="startButton" type="button">Quiz starten</button>
+          </div>
+        </div>
+        <div class="hero-image">
+          <img src="./assets/rinpoche.jpg" alt="Yongey Mingyur Rinpoche">
+        </div>
+      </section>
+
+      <section class="quiz" id="quiz" aria-live="polite">
+        <div class="question-image">
+          <img id="cardImage" src="./assets/all.png" alt="">
+        </div>
+        <article class="panel">
+          <p class="quiz-title">Tergar Quiz zum 10-jährigen Jubiläum</p>
+          <div class="progress">
+            <span id="stepText">Frage 1 von 20</span>
+            <span class="category" id="categoryText">Praxis</span>
+          </div>
+          <h2 id="questionText"></h2>
+          <div class="options" id="options"></div>
+          <div class="answer" id="answerBox">
+            <p class="answer-title" id="answerTitle"></p>
+            <p id="answerText"></p>
+            <p class="practice" id="practiceText"></p>
+            <p class="source" id="sourceText"></p>
+          </div>
+          <div class="actions">
+            <button class="ghost" id="backButton" type="button">Zurück</button>
+            <button class="primary" id="nextButton" type="button">Weiter</button>
+          </div>
+        </article>
+      </section>
+
+      <section class="result" id="result">
+        <div class="result-visual" aria-hidden="true"></div>
+        <div class="result-content">
+          <p class="scoreline" id="scoreText"></p>
+          <h2>Vielen Dank fürs Mitmachen.</h2>
+          <p class="result-copy">Das war das Jubiläums-Quiz zum Community Praxistag.</p>
+          <div class="start-row">
+            <button class="primary" id="restartButton" type="button">Noch einmal starten</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const cards = [
+              {
+                      category: "Bedeutung",
+                      image: "./assets/quiz-frame-01.jpg",
+                      question: "Was bedeutet der Name „Tergar“ übersetzt?",
+                      options: [
+                              "Berg der Stille",
+                              "Schatz und Ort der Zusammenkunft",
+                              "Weg des Herzens"
+                      ],
+                      correct: 1,
+                      answer: "In der tibetischen Tradition verweist „Ter“ auf einen verborgenen Schatz und steht für die angeborene Weisheit und das Mitgefühl, die in jedem Menschen vorhanden sind. „Gar“ bedeutet Zusammenkunft oder einen Ort, an dem Menschen zusammenkommen. Tergar ist somit eine Gemeinschaft, in der wir zusammenkommen, um diese inneren Schätze des Geistes zu entdecken und freizulegen.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Geschichte",
+                      image: "./assets/quiz-frame-02.jpg",
+                      question: "In welcher Stadt wurde Tergar Deutschland e.V. im März 2016 offiziell gegründet?",
+                      options: [
+                              "Berlin",
+                              "München",
+                              "Nürnberg"
+                      ],
+                      correct: 2,
+                      answer: "Nürnberg ist der Geburtsort des deutschen Vereins. Er wurde dort auf die direkte Bitte von Mingyur Rinpoche hin gegründet, um seinen Unterweisungen in der Region ein formelles Zuhause zu geben.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Geschichte",
+                      image: "./assets/quiz-frame-03.jpg",
+                      question: "Wie viele Menschen nahmen kurz nach der Vereinsgründung an der ersten Veranstaltung mit Mingyur Rinpoche in Nürnberg teil?",
+                      options: [
+                              "150 Menschen",
+                              "500 Menschen",
+                              "1.200 Menschen"
+                      ],
+                      correct: 1,
+                      answer: "Nur wenige Wochen nach der offiziellen Gründung im Jahr 2016 war die erste öffentliche Veranstaltung mit Mingyur Rinpoche mit 500 Teilnehmenden vollständig ausverkauft - ein kraftvoller Auftakt für die deutsche Gemeinschaft.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Community",
+                      image: "./assets/quiz-frame-04.jpg",
+                      question: "Auf wie viele lokale Praxisgruppen ist die Gemeinschaft in Deutschland, Österreich und der Schweiz angewachsen?",
+                      options: [
+                              "Genau 10",
+                              "Über 30",
+                              "Mehr als 100"
+                      ],
+                      correct: 1,
+                      answer: "In den vergangenen zehn Jahren hat sich Tergar zu einem weit verzweigten Netzwerk entwickelt. Von kleinen Gruppen im Wohnzimmer bis hin zu größeren Stadtgruppen gibt es heute über 30 lokale Praxisgruppen in der DACH-Region, in denen Menschen regelmäßig zusammenkommen, um sich gegenseitig auf ihrem Weg zu unterstützen.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Rinpoche",
+                      image: "./assets/quiz-frame-05.jpg",
+                      question: "Mit welcher persönlichen Herausforderung arbeitete Mingyur Rinpoche mithilfe von Meditation in seiner Kindheit?",
+                      options: [
+                              "Panikattacken",
+                              "Chronische Schlaflosigkeit",
+                              "Prüfungsangst"
+                      ],
+                      correct: 0,
+                      answer: "Als Kind litt Mingyur Rinpoche unter stark belastenden Panikattacken. Er entdeckte, dass er seine Gefühle durch Meditation „anfreunden“ konnte, indem er sie erforschte, statt gegen sie anzukämpfen.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Rinpoche",
+                      image: "./assets/quiz-frame-06.jpg",
+                      question: "Wie alt war Mingyur Rinpoche, als er darauf bestand, sein erstes traditionelles Drei-Jahres-Retreat zu beginnen?",
+                      options: [
+                              "13 Jahre",
+                              "18 Jahre",
+                              "25 Jahre"
+                      ],
+                      correct: 0,
+                      answer: "Schon als junger Teenager war Rinpoche entschlossen, seinen Geist zu meistern. Er bat seinen Vater um Erlaubnis, mit 13 Jahren in das intensive Drei-Jahres-Retreat einzutreten, insbesondere um mit seinen eigenen Kindheitserfahrungen von starker Angst und Panikattacken zu arbeiten.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Rinpoche",
+                      image: "./assets/quiz-frame-07.jpg",
+                      question: "Wie lange dauerte Mingyur Rinpoches berühmtes „Wander-Retreat“, während dessen er unerkannt als Bettler lebte?",
+                      options: [
+                              "1 Jahr",
+                              "4 Jahre",
+                              "10 Jahre"
+                      ],
+                      correct: 1,
+                      answer: "Von 2011 bis 2015 ließ Rinpoche sein klösterliches Leben hinter sich, um als wandernder Yogi in Indien und im Himalaya zu leben. Diese Zeit war Verletzlichkeit und Loslassen gewidmet - dem Loslassen von Status und Identität. Seine Reise dokumentierte er in seinem tief bewegenden Buch In Love with the World, auf Deutsch: Auf dem Weg.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Rinpoche",
+                      image: "./assets/quiz-frame-08.jpg",
+                      question: "Welchen humorvollen Titel gaben die Medien Mingyur Rinpoche häufig nach wissenschaftlichen Untersuchungen seines Gehirns?",
+                      options: [
+                              "Der weise Wanderer",
+                              "Der glücklichste Mensch der Welt",
+                              "Der Meister der Stille"
+                      ],
+                      correct: 1,
+                      answer: "Dieser Titel entstand, als Forscher:innen an der University of Wisconsin-Madison unter der Leitung von Richard Davidson während Rinpoches Meditation außergewöhnlich hohe Werte positiver Hirnaktivität maßen. Rinpoche selbst verwendet diesen „Titel“ oft mit viel Humor und erinnert uns daran, dass Glücklichsein eine Fähigkeit ist, die trainiert werden kann.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Wissenschaft",
+                      image: "./assets/quiz-frame-09.jpg",
+                      question: "An welcher Universität wurden Mingyur Rinpoches Gehirnwellen wissenschaftlich untersucht?",
+                      options: [
+                              "Harvard University",
+                              "University of Wisconsin-Madison",
+                              "Universität Berlin"
+                      ],
+                      correct: 1,
+                      answer: "Er nahm an einer bekannten Pilotstudie an der University of Wisconsin-Madison teil, die untersuchte, wie sich langjährige Meditationspraxis physisch auf das Gehirn auswirkt.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Wissenschaft",
+                      image: "./assets/quiz-frame-10.jpg",
+                      question: "Welcher wissenschaftliche Begriff beschreibt die Fähigkeit des Gehirns, sich durch regelmäßige Meditation physisch zu verändern?",
+                      options: [
+                              "Neuro-Stabilität",
+                              "Neuroplastizität",
+                              "Gedankenresonanz"
+                      ],
+                      correct: 1,
+                      answer: "Die moderne Neurowissenschaft zeigt, dass unser Gehirn einem Muskel ähnelt. Durch Neuroplastizität stärkt regelmäßige Meditation neuronale Bahnen für Frieden, Wohlbefinden, Widerstandskraft und Mitgefühl - und kann die Struktur des Gehirns zum Positiven verändern.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Praxis",
+                      image: "./assets/quiz-frame-11.jpg",
+                      question: "Mit wie viel täglicher formeller Praxis empfiehlt Tergar Anfänger:innen zu beginnen?",
+                      options: [
+                              "10 Minuten",
+                              "45 Minuten",
+                              "1 Stunde"
+                      ],
+                      correct: 0,
+                      answer: "Der Schlüssel zum Erfolg liegt in Beständigkeit statt Intensität. Bereits 10 Minuten pro Tag können helfen, eine stabile Gewohnheit aufzubauen. Ziel ist es, die Praxis auf natürliche Weise in das eigene Leben zu integrieren, statt das Leben um die Praxis kreisen zu lassen.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Praxis",
+                      image: "./assets/quiz-frame-12.jpg",
+                      question: "Welches Motto empfiehlt Tergar, um Meditation in einen vollen Alltag zu integrieren?",
+                      options: [
+                              "Eine Stunde, einmal täglich",
+                              "Nur, wenn du dich gestresst fühlst",
+                              "Kurz und oft"
+                      ],
+                      correct: 2,
+                      answer: "Tergar lehrt, dass viele kurze Momente des Gewahrseins, die über den Tag hinweg immer wieder wiederholt werden, wirksamer für die Veränderung von Gewohnheiten sein können als seltene, lange Sessions.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Praxis",
+                      image: "./assets/quiz-frame-13.jpg",
+                      question: "Was ist laut Mingyur Rinpoche der beste Weg, mit dem „Affengeist“, also unruhigen Gedanken, umzugehen?",
+                      options: [
+                              "Ihn vollständig ignorieren",
+                              "Ihm einen „Job“ geben",
+                              "Ihn zwingen, still zu sein"
+                      ],
+                      correct: 1,
+                      answer: "Statt gegen Gedanken anzukämpfen, geben wir dem Geist einen „Job“ - zum Beispiel, sich auf den Atem auszurichten. So nutzen wir die natürliche Energie des Geistes, um im gegenwärtigen Moment verankert zu sein.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Analogie",
+                      image: "./assets/quiz-frame-14.jpg",
+                      question: "In einer bekannten Tergar Analogie: Wenn der Körper mit einem Pferd verglichen wird, was ist dann der Geist?",
+                      options: [
+                              "Die Kutsche",
+                              "Der Reiter",
+                              "Der Stall"
+                      ],
+                      correct: 1,
+                      answer: "Der Reiter, also der Geist, und das Pferd, also Körper und Atem, werden in der Meditation zusammengebracht, damit sie schließlich in Harmonie ruhen können.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Praxis",
+                      image: "./assets/quiz-frame-15.jpg",
+                      question: "Wie solltest du dich bei der Tergar Gehmeditation idealerweise bewegen?",
+                      options: [
+                              "Extrem langsam",
+                              "So natürlich wie möglich",
+                              "Nur auf Zehenspitzen"
+                      ],
+                      correct: 1,
+                      answer: "Es ist nicht nötig, sich unnatürlich oder übermäßig langsam zu bewegen. Ziel ist es, in einem normalen Tempo zu gehen und dabei entspannt und gewahr gegenüber der Umgebung oder den Empfindungen zu bleiben.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Joy of Living",
+                      image: "./assets/quiz-frame-16.jpg",
+                      question: "Wie viele Stufen umfasst das Programm „Joy of Living“?",
+                      options: [
+                              "3 Stufen",
+                              "5 Stufen",
+                              "7 Stufen"
+                      ],
+                      correct: 0,
+                      answer: "Das Programm ist in drei Stufen aufgebaut: Den Geist beruhigen, Stufe 1; Das Herz öffnen, Stufe 2; und Weisheit erwecken, Stufe 3.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Joy of Living",
+                      image: "./assets/quiz-frame-17.jpg",
+                      question: "Was ist das zentrale Thema und Herzstück der Kursebene „Joy of Living 2“?",
+                      options: [
+                              "Den Geist beruhigen",
+                              "Liebe und Mitgefühl",
+                              "Weisheit erwecken"
+                      ],
+                      correct: 1,
+                      answer: "Nachdem in Stufe 1 gelernt wurde, den Geist zu beruhigen, richtet sich Stufe 2 auf das Öffnen des Herzens. Die Teilnehmenden üben Methoden, um liebende Güte, Mitgefühl und Freude zu kultivieren. Dadurch können sie sich tiefer mit sich selbst und der Welt um sie herum verbinden.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Grundlegende Güte",
+                      image: "./assets/quiz-frame-18.jpg",
+                      question: "Worauf verweist der Begriff „grundlegende Güte“?",
+                      options: [
+                              "Dass wir uns immer vollkommen verhalten müssen",
+                              "Dass unsere wahre Natur bereits rein und gut ist",
+                              "Dass wir erst nach Jahren der Praxis gut werden"
+                      ],
+                      correct: 1,
+                      answer: "Grundlegende Güte bedeutet, dass Qualitäten wie Frieden, Weisheit und Mitgefühl bereits Teil unserer grundlegenden Natur sind. Sie müssen nicht erschaffen, sondern nur erkannt werden.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Metapher",
+                      image: "./assets/quiz-frame-19.jpg",
+                      question: "Womit vergleicht Mingyur Rinpoche das „Heimweh nach unserer wahren Natur“?",
+                      options: [
+                              "Mit einem verlorenen Schlüssel",
+                              "Mit einem Vogel, der sein Nest verlassen hat",
+                              "Mit einem Schiff ohne Kompass"
+                      ],
+                      correct: 1,
+                      answer: "Wenn wir unsere inneren Qualitäten nicht erkennen, fühlen wir uns wie ein Vogel, der weit von seinem Nest entfernt umherfliegt und ständig nach einem Ort sucht, an dem er sich wirklich zu Hause und zufrieden fühlt.",
+                      practice: "",
+                      source: ""
+              },
+              {
+                      category: "Mission",
+                      image: "./assets/quiz-frame-20.jpg",
+                      question: "Was ist die übergeordnete Mission, die alle Aktivitäten von Tergar Deutschland trägt?",
+                      options: [
+                              "Größere Zentren bauen",
+                              "Menschen dabei unterstützen, in Gewahrsein, Mitgefühl und Weisheit zu leben",
+                              "Tibetische Geschichte unterrichten"
+                      ],
+                      correct: 1,
+                      answer: "Der gesamte Fokus des Vereins beruht auf der Motivation, Leben positiv zu verändern. Indem Meditation Teil des Alltags wird, möchte Tergar Einzelne und Gemeinschaften dabei unterstützen, Gewahrsein, Mitgefühl und Weisheit zu kultivieren.",
+                      practice: "",
+                      source: ""
+              }
+      ];
+
+      const intro = document.querySelector("#intro");
+      const quiz = document.querySelector("#quiz");
+      const result = document.querySelector("#result");
+      const startButton = document.querySelector("#startButton");
+      const restartButton = document.querySelector("#restartButton");
+      const scoreText = document.querySelector("#scoreText");
+      const backButton = document.querySelector("#backButton");
+      const nextButton = document.querySelector("#nextButton");
+      const stepText = document.querySelector("#stepText");
+      const categoryText = document.querySelector("#categoryText");
+      const questionText = document.querySelector("#questionText");
+      const questionImage = document.querySelector(".question-image");
+      const cardImage = document.querySelector("#cardImage");
+      const options = document.querySelector("#options");
+      const answerBox = document.querySelector("#answerBox");
+      const answerTitle = document.querySelector("#answerTitle");
+      const answerText = document.querySelector("#answerText");
+      const practiceText = document.querySelector("#practiceText");
+      const sourceText = document.querySelector("#sourceText");
+
+      let current = 0;
+      let answered = false;
+      let score = 0;
+
+      function showQuiz() {
+        intro.style.display = "none";
+        result.classList.remove("is-active");
+        quiz.classList.add("is-active");
+        current = 0;
+        score = 0;
+        renderCard();
+      }
+
+      function renderCard() {
+        const card = cards[current];
+        answered = false;
+        stepText.textContent = `Frage ${current + 1} von ${cards.length}`;
+        categoryText.textContent = card.category;
+        questionText.textContent = card.question;
+        cardImage.src = card.image;
+        questionImage.classList.toggle("logo-card", card.imageMode === "logo");
+        answerBox.classList.remove("is-visible");
+        answerTitle.textContent = "";
+        answerText.textContent = "";
+        practiceText.textContent = "";
+        sourceText.textContent = "";
+        options.innerHTML = "";
+        backButton.disabled = current === 0;
+        nextButton.textContent = current === cards.length - 1 ? "Ergebnis" : "Weiter";
+
+        card.options.forEach((label, index) => {
+          const button = document.createElement("button");
+          button.className = "option";
+          button.type = "button";
+          button.textContent = label;
+          button.addEventListener("click", () => chooseAnswer(index));
+          options.append(button);
+        });
+      }
+
+      function chooseAnswer(index) {
+        if (answered) return;
+        answered = true;
+        const card = cards[current];
+        const allOptions = [...options.querySelectorAll(".option")];
+        allOptions.forEach((button, optionIndex) => {
+          button.classList.toggle("is-correct", optionIndex === card.correct);
+          button.classList.toggle("is-wrong", optionIndex === index && index !== card.correct);
+        });
+
+        if (index === card.correct) score += 1;
+
+        answerTitle.textContent = index === card.correct ? "Richtig." : "Fast.";
+        answerText.textContent = card.answer;
+        practiceText.textContent = card.practice;
+        sourceText.textContent = "";
+        answerBox.classList.add("is-visible");
+      }
+
+      function nextCard() {
+        if (current < cards.length - 1) {
+          current += 1;
+          renderCard();
+          return;
+        }
+
+        quiz.classList.remove("is-active");
+        result.classList.add("is-active");
+        scoreText.textContent = `${score} von ${cards.length} Fragen richtig beantwortet`;
+      }
+
+      function previousCard() {
+        if (current === 0) return;
+        current -= 1;
+        renderCard();
+      }
+
+      startButton.addEventListener("click", showQuiz);
+      restartButton.addEventListener("click", showQuiz);
+      nextButton.addEventListener("click", nextCard);
+      backButton.addEventListener("click", previousCard);
+    </script>
+  </body>
+</html>
