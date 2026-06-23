@@ -184,9 +184,9 @@
 
       .quiz {
         display: none;
-        width: min(900px, 100%);
+        width: min(760px, 100%);
         margin: 0 auto;
-        padding-top: 26px;
+        padding-top: 22px;
       }
 
       .quiz.is-active {
@@ -197,6 +197,7 @@
       .question-image {
         aspect-ratio: 1600 / 520;
         height: auto;
+        max-height: 250px;
         min-height: 0;
         overflow: hidden;
         border-radius: 4px 4px 0 0;
@@ -226,7 +227,7 @@
 
       .panel {
         min-height: 0;
-        padding: 30px;
+        padding: 24px 26px 26px;
         border-radius: 0 0 4px 4px;
         background: #ffffff;
         border: 1px solid rgba(66, 74, 88, 0.12);
@@ -255,12 +256,12 @@
       }
 
       h2 {
-        margin: 24px 0 16px;
+        margin: 18px 0 16px;
         color: var(--text);
         font-family: "Source Serif Pro", Georgia, serif;
-        font-size: clamp(28px, 3.2vw, 40px);
+        font-size: clamp(25px, 2.45vw, 32px);
         font-weight: 400;
-        line-height: 1.12;
+        line-height: 1.16;
         letter-spacing: 0;
       }
 
@@ -434,6 +435,7 @@
 
         .question-image {
           aspect-ratio: 1600 / 560;
+          max-height: none;
         }
 
         .panel,
