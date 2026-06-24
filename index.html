@@ -602,6 +602,23 @@
         line-height: 1.5;
       }
 
+      .result-fun {
+        margin: 16px 0 0;
+        color: var(--gold);
+        font-weight: 700;
+        font-size: 19px;
+      }
+
+      .rocket {
+        display: inline-block;
+        animation: rocket-bob 1.6s ease-in-out infinite;
+      }
+
+      @keyframes rocket-bob {
+        0%, 100% { transform: translateY(0) rotate(-10deg); }
+        50% { transform: translateY(-9px) rotate(-10deg); }
+      }
+
       /* Fallback fuer schmale Fenster / Smartphones: kein Stage-Scaling, normaler Fluss */
       @media (max-width: 860px) {
         .viewport {
@@ -743,6 +760,7 @@
             <p class="scoreline" id="scoreText"></p>
             <h2>Vielen Dank fürs Mitmachen.</h2>
             <p class="result-copy" id="resultCopy">Das war das Jubiläums-Quiz zum Community Praxistag. Schön, dass du dabei warst.</p>
+            <p class="result-fun"><span class="rocket" aria-hidden="true">🚀</span> Auf die nächsten zehn Jahre!</p>
             <div class="start-row">
               <button class="primary" id="restartButton" type="button">Noch einmal starten</button>
             </div>
@@ -1279,7 +1297,7 @@
         } else if (quote >= 0.5) {
           copy = "Schön gemacht. Vielleicht war ja auch ein neuer Aha-Moment dabei.";
         } else {
-          copy = "Klasse, dass du mitgemacht hast. Das Schöne am Weg ist das Entdecken, nicht das Wissen.";
+          copy = "Klasse, dass du mitgemacht hast. Das Schöne am Weg ist das Entdecken.";
         }
         resultCopy.textContent = copy;
         playBell();
