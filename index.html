@@ -766,7 +766,6 @@
           <p id="mText"></p>
           <p class="practice" id="mPractice"></p>
         </div>
-        <a class="morelink modal-more" id="mMore" href="https://www.tergar.de" target="_blank" rel="noopener">Mehr erfahren auf tergar.de →</a>
         <div class="modal-actions">
           <button class="primary" id="mNext" type="button">Weiter</button>
         </div>
@@ -1085,7 +1084,6 @@
       const mTitle = document.querySelector("#mTitle");
       const mText = document.querySelector("#mText");
       const mPractice = document.querySelector("#mPractice");
-      const mMore = document.querySelector("#mMore");
       const mNext = document.querySelector("#mNext");
       const mClose = document.querySelector("#mClose");
 
@@ -1191,21 +1189,14 @@
           index === card.correct ? "Richtig." : "Fast.",
           card.answer,
           card.practice,
-          moreLinks[card.category],
           isLast ? "Ergebnis" : "Weiter"
         );
       }
 
-      function openModal(title, text, practice, url, nextLabel) {
+      function openModal(title, text, practice, nextLabel) {
         mTitle.textContent = title;
         mText.textContent = text;
         mPractice.textContent = practice || "";
-        if (url) {
-          mMore.href = url;
-          mMore.classList.add("is-visible");
-        } else {
-          mMore.classList.remove("is-visible");
-        }
         mNext.textContent = nextLabel;
         const body = answerModal.querySelector(".modal-body");
         if (body) body.scrollTop = 0;
