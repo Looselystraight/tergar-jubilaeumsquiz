@@ -443,9 +443,23 @@
       .quizmeta {
         display: flex;
         justify-content: space-between;
-        align-items: baseline;
+        align-items: center;
         gap: 12px;
         margin-bottom: 6px;
+      }
+
+      .quizmeta-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .quizmeta-logo {
+        height: 30px;
+        width: auto;
+        display: block;
+        flex: none;
       }
 
       .quizmeta-right {
@@ -749,7 +763,10 @@
 
         <section class="quiz" id="quiz" aria-live="polite">
           <div class="quizmeta">
-            <span class="quiz-title">Tergar Quiz zum 10-jährigen Jubiläum</span>
+            <span class="quizmeta-left">
+              <img class="quizmeta-logo" src="./assets/tergar-10-logo.svg" alt="Tergar Meditationsgemeinschaft 10 Jahre">
+              <span class="quiz-title">Quiz zum 10-jährigen Jubiläum</span>
+            </span>
             <span class="quizmeta-right"><span id="stepText">Frage 1 von 23</span><span class="category" id="categoryText">Praxis</span></span>
           </div>
           <div class="progressbar" aria-hidden="true">
