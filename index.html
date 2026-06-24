@@ -382,18 +382,13 @@
 
       .question-image {
         flex: none;
-        height: 230px;
+        height: 165px;
         overflow: hidden;
         border-radius: 4px 4px 0 0;
         background: #ffffff;
         border: 1px solid rgba(66, 74, 88, 0.12);
         border-bottom: 0;
         position: relative;
-        transition: height 0.2s ease;
-      }
-
-      .quiz.is-answered .question-image {
-        height: 96px;
       }
 
       .question-image img {
@@ -436,8 +431,7 @@
       }
 
       .quiz-title,
-      h2,
-      .options {
+      h2 {
         flex: none;
       }
 
@@ -453,19 +447,23 @@
       }
 
       h2 {
-        margin: 12px 0 14px;
+        margin: 10px 0 10px;
         color: var(--text);
         font-family: "Source Serif Pro", Georgia, serif;
-        font-size: 32px;
+        font-size: 26px;
         font-weight: 400;
         line-height: 1.15;
         letter-spacing: 0;
       }
 
       .options {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        align-content: start;
         display: grid;
         gap: 8px;
-        margin: 2px 0 0;
+        margin: 10px 0 0;
       }
 
       .option {
@@ -474,7 +472,7 @@
         background: var(--paper);
         border: 1px solid rgba(103, 116, 138, 0.24);
         text-align: left;
-        font-size: 17px;
+        font-size: 16px;
         line-height: 1.24;
       }
 
@@ -547,8 +545,9 @@
         display: flex;
         justify-content: space-between;
         gap: 12px;
-        margin-top: auto;
+        margin-top: 12px;
         padding-top: 14px;
+        border-top: 1px solid rgba(66, 74, 88, 0.08);
       }
 
       .result {
@@ -916,7 +915,7 @@
               },
               {
                       category: "Wissenschaft",
-                      image: "./assets/quiz-frame-10.jpg",
+                      image: "./assets/wiss-neuroplastizitaet.jpg",
                       question: "Wie lautet der wissenschaftliche Begriff für die Fähigkeit des Gehirns, durch Meditation trainiert und physisch verändert zu werden?",
                       options: [
                               "Neuro-Stabilität",
