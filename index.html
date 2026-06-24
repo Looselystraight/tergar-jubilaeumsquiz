@@ -192,6 +192,82 @@
         outline: 3px solid rgba(227, 159, 36, 0.28);
       }
 
+      /* Antwort-Pop-up (liegt ueber der skalierten Karte, nutzt echte Fenstergroesse) */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(66, 74, 88, 0.45);
+      }
+
+      .modal-overlay.is-open {
+        display: flex;
+      }
+
+      .modal-card {
+        position: relative;
+        width: 100%;
+        max-width: 640px;
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+        padding: 30px 32px 26px;
+        background: #ffffff;
+        border-radius: 12px;
+        border-top: 5px solid var(--gold);
+        box-shadow: 0 24px 70px rgba(66, 74, 88, 0.32);
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 14px;
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        font-size: 26px;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .modal-close:hover,
+      .modal-close:focus-visible {
+        color: var(--text);
+      }
+
+      .modal-title {
+        margin: 0 0 14px;
+        color: var(--text);
+        font-weight: 700;
+        font-size: 22px;
+      }
+
+      .modal-body {
+        overflow-y: auto;
+        color: var(--text);
+        font-size: 17px;
+        line-height: 1.5;
+      }
+
+      .modal-body p {
+        margin: 0 0 10px;
+      }
+
+      .modal-more {
+        margin-top: 14px;
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
       .hero {
         display: none;
         flex: 1;
@@ -682,6 +758,21 @@
 
     <audio id="bellSound" src="./assets/klangschale.mp3" preload="auto"></audio>
 
+    <div class="modal-overlay" id="answerModal" aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+        <button class="modal-close" id="mClose" type="button" aria-label="Schließen">×</button>
+        <p class="modal-title" id="mTitle"></p>
+        <div class="modal-body">
+          <p id="mText"></p>
+          <p class="practice" id="mPractice"></p>
+        </div>
+        <a class="morelink modal-more" id="mMore" href="https://www.tergar.de" target="_blank" rel="noopener">Mehr erfahren auf tergar.de →</a>
+        <div class="modal-actions">
+          <button class="primary" id="mNext" type="button">Weiter</button>
+        </div>
+      </div>
+    </div>
+
     <script>
       const cards = [
               {
@@ -990,6 +1081,13 @@
       const resultCopy = document.querySelector("#resultCopy");
       const soundToggle = document.querySelector("#soundToggle");
       const bellSound = document.querySelector("#bellSound");
+      const answerModal = document.querySelector("#answerModal");
+      const mTitle = document.querySelector("#mTitle");
+      const mText = document.querySelector("#mText");
+      const mPractice = document.querySelector("#mPractice");
+      const mMore = document.querySelector("#mMore");
+      const mNext = document.querySelector("#mNext");
+      const mClose = document.querySelector("#mClose");
 
       let current = 0;
       let answered = false;
@@ -1046,6 +1144,7 @@
       function renderCard() {
         const card = cards[current];
         answered = false;
+        closeModal();
         quiz.classList.remove("is-answered");
         stepText.textContent = `Frage ${current + 1} von ${cards.length}`;
         categoryText.textContent = card.category;
@@ -1087,18 +1186,37 @@
 
         if (index === card.correct) score += 1;
 
-        answerTitle.textContent = index === card.correct ? "Richtig." : "Fast.";
-        answerText.textContent = card.answer;
-        practiceText.textContent = card.practice;
-        sourceText.textContent = "";
+        const isLast = current === cards.length - 1;
+        openModal(
+          index === card.correct ? "Richtig." : "Fast.",
+          card.answer,
+          card.practice,
+          moreLinks[card.category],
+          isLast ? "Ergebnis" : "Weiter"
+        );
+      }
 
-        const url = moreLinks[card.category];
+      function openModal(title, text, practice, url, nextLabel) {
+        mTitle.textContent = title;
+        mText.textContent = text;
+        mPractice.textContent = practice || "";
         if (url) {
-          moreLink.href = url;
-          moreLink.classList.add("is-visible");
+          mMore.href = url;
+          mMore.classList.add("is-visible");
+        } else {
+          mMore.classList.remove("is-visible");
         }
+        mNext.textContent = nextLabel;
+        const body = answerModal.querySelector(".modal-body");
+        if (body) body.scrollTop = 0;
+        answerModal.classList.add("is-open");
+        answerModal.setAttribute("aria-hidden", "false");
+        mNext.focus();
+      }
 
-        answerBox.classList.add("is-visible");
+      function closeModal() {
+        answerModal.classList.remove("is-open");
+        answerModal.setAttribute("aria-hidden", "true");
       }
 
       function playBell() {
@@ -1110,6 +1228,7 @@
       }
 
       function nextCard() {
+        closeModal();
         if (current < cards.length - 1) {
           current += 1;
           renderCard();
@@ -1145,6 +1264,13 @@
       nextButton.addEventListener("click", nextCard);
       backButton.addEventListener("click", previousCard);
 
+      // Antwort-Pop-up
+      mNext.addEventListener("click", nextCard);
+      mClose.addEventListener("click", closeModal);
+      answerModal.addEventListener("click", (event) => {
+        if (event.target === answerModal) closeModal();
+      });
+
       // Klangschale an/aus
       soundToggle.addEventListener("click", () => {
         soundOn = !soundOn;
@@ -1169,6 +1295,18 @@
           return;
         }
         if (!quizVisible) return;
+
+        // Pop-up offen: Enter/Leertaste betaetigen den fokussierten Weiter-Button
+        if (answerModal.classList.contains("is-open")) {
+          if (event.key === "Escape") {
+            event.preventDefault();
+            closeModal();
+          } else if (event.key === "ArrowRight") {
+            event.preventDefault();
+            nextCard();
+          }
+          return;
+        }
 
         if (["1", "2", "3"].includes(event.key)) {
           const idx = Number(event.key) - 1;
