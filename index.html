@@ -33,15 +33,20 @@
         --soft: #f9f9fb;
         --sky-a: #f2d4a8;
         --sky-b: #fbe0c9;
+        --scale: 1;
       }
 
       * {
         box-sizing: border-box;
       }
 
+      html,
+      body {
+        height: 100%;
+      }
+
       body {
         margin: 0;
-        min-height: 100vh;
         color: var(--text);
         font-family: "Nunito Sans", Arial, sans-serif;
         background: #ffffff;
@@ -51,24 +56,38 @@
         font: inherit;
       }
 
+      /* Stage: feste Design-Groesse, als Ganzes proportional ins Fenster skaliert */
+      .viewport {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+
       .shell {
-        width: min(980px, calc(100% - 32px));
-        margin: 0 auto;
-        padding: 18px 0 36px;
+        width: 1180px;
+        height: 760px;
+        padding: 18px 24px 22px;
+        display: flex;
+        flex-direction: column;
+        transform: scale(var(--scale));
+        transform-origin: center center;
       }
 
       .topbar {
+        flex: none;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 16px;
-        min-height: 74px;
-        padding-bottom: 16px;
+        min-height: 58px;
+        padding-bottom: 10px;
         border-bottom: 1px solid rgba(66, 74, 88, 0.12);
       }
 
       .logo {
-        width: min(360px, 50vw);
+        width: 320px;
         min-width: 130px;
         display: block;
       }
@@ -78,23 +97,28 @@
         align-items: center;
         gap: 10px;
         color: var(--text);
-        font-size: 14px;
+        font-size: 13px;
       }
 
       .event-pill {
         border: 1px solid rgba(66, 74, 88, 0.16);
         border-radius: 999px;
-        padding: 8px 14px;
+        padding: 6px 12px;
         background: #ffffff;
         white-space: nowrap;
       }
 
       .hero {
-        display: grid;
+        display: none;
+        flex: 1;
+        min-height: 0;
         grid-template-columns: minmax(0, 1fr) minmax(280px, 0.82fr);
         align-items: center;
-        gap: 28px;
-        padding: 34px 0 30px;
+        gap: 32px;
+      }
+
+      .hero.is-active {
+        display: grid;
       }
 
       .eyebrow {
@@ -109,7 +133,7 @@
         max-width: 620px;
         color: var(--text);
         font-family: "Source Serif Pro", Georgia, serif;
-        font-size: clamp(40px, 5.6vw, 62px);
+        font-size: 58px;
         font-weight: 400;
         line-height: 1.08;
         letter-spacing: 0;
@@ -127,17 +151,17 @@
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
-        margin-top: 20px;
+        margin-top: 22px;
       }
 
       .primary,
       .secondary,
       .option,
       .ghost {
-        min-height: 46px;
+        min-height: 40px;
         border: 0;
         border-radius: 6px;
-        padding: 13px 20px;
+        padding: 10px 16px;
         cursor: pointer;
       }
 
@@ -184,27 +208,32 @@
 
       .quiz {
         display: none;
-        width: min(760px, 100%);
+        flex: 1;
+        min-height: 0;
+        width: min(1040px, 100%);
         margin: 0 auto;
-        padding-top: 22px;
+        padding-top: 16px;
       }
 
       .quiz.is-active {
-        display: grid;
-        gap: 0;
+        display: flex;
+        flex-direction: column;
       }
 
       .question-image {
-        aspect-ratio: 1600 / 520;
-        height: auto;
-        max-height: 250px;
-        min-height: 0;
+        flex: none;
+        height: 230px;
         overflow: hidden;
         border-radius: 4px 4px 0 0;
         background: #ffffff;
         border: 1px solid rgba(66, 74, 88, 0.12);
         border-bottom: 0;
         position: relative;
+        transition: height 0.2s ease;
+      }
+
+      .quiz.is-answered .question-image {
+        height: 96px;
       }
 
       .question-image img {
@@ -226,8 +255,9 @@
       }
 
       .panel {
+        flex: 1;
         min-height: 0;
-        padding: 24px 26px 26px;
+        padding: 22px 30px 22px;
         border-radius: 0 0 4px 4px;
         background: #ffffff;
         border: 1px solid rgba(66, 74, 88, 0.12);
@@ -236,6 +266,7 @@
       }
 
       .progress {
+        flex: none;
         display: flex;
         justify-content: space-between;
         gap: 16px;
@@ -244,10 +275,16 @@
         font-weight: 700;
       }
 
+      .quiz-title,
+      h2,
+      .options {
+        flex: none;
+      }
+
       .quiz-title {
-        margin: 0 0 18px;
+        margin: 0 0 10px;
         color: var(--text);
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 700;
       }
 
@@ -256,19 +293,19 @@
       }
 
       h2 {
-        margin: 18px 0 16px;
+        margin: 12px 0 14px;
         color: var(--text);
         font-family: "Source Serif Pro", Georgia, serif;
-        font-size: clamp(25px, 2.45vw, 32px);
+        font-size: 32px;
         font-weight: 400;
-        line-height: 1.16;
+        line-height: 1.15;
         letter-spacing: 0;
       }
 
       .options {
         display: grid;
-        gap: 10px;
-        margin: 4px 0 0;
+        gap: 8px;
+        margin: 2px 0 0;
       }
 
       .option {
@@ -277,7 +314,8 @@
         background: var(--paper);
         border: 1px solid rgba(103, 116, 138, 0.24);
         text-align: left;
-        line-height: 1.32;
+        font-size: 17px;
+        line-height: 1.24;
       }
 
       .option:hover,
@@ -297,8 +335,9 @@
 
       .answer {
         display: none;
-        margin-top: 18px;
-        padding: 18px;
+        margin-top: 14px;
+        padding: 16px;
+        overflow-y: auto;
         border-radius: 4px;
         background: var(--soft);
         border: 1px solid rgba(103, 116, 138, 0.18);
@@ -306,6 +345,8 @@
 
       .answer.is-visible {
         display: block;
+        flex: 1 1 auto;
+        min-height: 0;
       }
 
       .answer-title {
@@ -342,16 +383,18 @@
       }
 
       .actions {
+        flex: none;
         display: flex;
         justify-content: space-between;
         gap: 12px;
         margin-top: auto;
-        padding-top: 20px;
+        padding-top: 14px;
       }
 
       .result {
         display: none;
-        padding: 0;
+        flex: 1;
+        min-height: 0;
         border-radius: 4px;
         background: #ffffff;
         border: 1px solid rgba(66, 74, 88, 0.12);
@@ -364,7 +407,7 @@
       }
 
       .result-visual {
-        min-height: 420px;
+        min-height: 0;
         background:
           linear-gradient(rgba(66, 74, 88, 0.08), rgba(66, 74, 88, 0.08)),
           url("./assets/brand-background.jpg") center / cover no-repeat;
@@ -387,7 +430,7 @@
         margin: 0;
         color: var(--text);
         font-family: "Source Serif Pro", Georgia, serif;
-        font-size: clamp(38px, 5vw, 58px);
+        font-size: 52px;
         font-weight: 400;
         line-height: 1.08;
       }
@@ -400,17 +443,26 @@
         line-height: 1.5;
       }
 
+      /* Fallback fuer schmale Fenster / Smartphones: kein Stage-Scaling, normaler Fluss */
       @media (max-width: 860px) {
-        .shell {
-          width: min(100% - 20px, 680px);
-          padding-top: 14px;
+        .viewport {
+          position: static;
+          display: block;
+          overflow: visible;
         }
 
-        .topbar,
-        .hero,
-        .quiz,
-        .result.is-active {
+        .shell {
+          width: min(100% - 24px, 680px);
+          height: auto;
+          margin: 0 auto;
+          padding: 14px 0 28px;
+          transform: none;
+          display: block;
+        }
+
+        .hero.is-active {
           grid-template-columns: 1fr;
+          gap: 18px;
         }
 
         .topbar {
@@ -425,22 +477,31 @@
           flex-wrap: wrap;
         }
 
-        .hero {
-          gap: 18px;
-        }
-
         .hero-image {
           aspect-ratio: 1.8;
         }
 
-        .question-image {
-          aspect-ratio: 1600 / 560;
-          max-height: none;
+        .quiz {
+          width: 100%;
+        }
+
+        .question-image,
+        .quiz.is-answered .question-image {
+          height: auto;
+          aspect-ratio: 1600 / 600;
         }
 
         .panel,
         .result-content {
           padding: 18px;
+        }
+
+        .answer {
+          max-height: none;
+        }
+
+        .result.is-active {
+          grid-template-columns: 1fr;
         }
 
         .result-visual {
@@ -451,8 +512,8 @@
           font-size: clamp(38px, 13vw, 58px);
         }
 
-        .subline {
-          font-size: 18px;
+        h2 {
+          font-size: clamp(26px, 7vw, 34px);
         }
 
         .actions {
@@ -462,67 +523,69 @@
     </style>
   </head>
   <body>
-    <main class="shell">
-      <header class="topbar" aria-label="Kopfbereich">
-        <img class="logo" src="./assets/tergar-10-logo.svg" alt="Tergar Meditationsgemeinschaft 10 Jahre">
-        <div class="event-details" aria-label="Veranstaltungsdaten">
-          <span class="event-pill">Community Praxistag</span>
-          <span class="event-pill">28. Juni 2026</span>
-          <span class="event-pill">Online</span>
-        </div>
-      </header>
+    <div class="viewport">
+      <main class="shell">
+        <header class="topbar" aria-label="Kopfbereich">
+          <img class="logo" src="./assets/tergar-10-logo.svg" alt="Tergar Meditationsgemeinschaft 10 Jahre">
+          <div class="event-details" aria-label="Veranstaltungsdaten">
+            <span class="event-pill">Community Praxistag</span>
+            <span class="event-pill">28. Juni 2026</span>
+            <span class="event-pill">Online</span>
+          </div>
+        </header>
 
-      <section class="hero" id="intro">
-        <div>
-          <p class="eyebrow">10 Jahre Verbundenheit & Inspiration</p>
-          <h1>Tergar Quiz zum Community Praxistag</h1>
-          <p class="subline">Ein interaktiver Rückblick auf zehn Jahre Tergar im deutschsprachigen Raum: gemeinsames Üben, lebendige Begegnungen und kleine Aha-Momente zur Praxis.</p>
-          <div class="start-row">
-            <button class="primary" id="startButton" type="button">Quiz starten</button>
+        <section class="hero is-active" id="intro">
+          <div>
+            <p class="eyebrow">10 Jahre Verbundenheit &amp; Inspiration</p>
+            <h1>Tergar Quiz zum Community Praxistag</h1>
+            <p class="subline">Ein interaktiver Rückblick auf zehn Jahre Tergar im deutschsprachigen Raum: gemeinsames Üben, lebendige Begegnungen und kleine Aha-Momente zur Praxis.</p>
+            <div class="start-row">
+              <button class="primary" id="startButton" type="button">Quiz starten</button>
+            </div>
           </div>
-        </div>
-        <div class="hero-image">
-          <img src="./assets/rinpoche.jpg" alt="Yongey Mingyur Rinpoche">
-        </div>
-      </section>
+          <div class="hero-image">
+            <img src="./assets/rinpoche.jpg" alt="Yongey Mingyur Rinpoche">
+          </div>
+        </section>
 
-      <section class="quiz" id="quiz" aria-live="polite">
-        <div class="question-image">
-          <img id="cardImage" src="./assets/all.png" alt="">
-        </div>
-        <article class="panel">
-          <p class="quiz-title">Tergar Quiz zum 10-jährigen Jubiläum</p>
-          <div class="progress">
-            <span id="stepText">Frage 1 von 20</span>
-            <span class="category" id="categoryText">Praxis</span>
+        <section class="quiz" id="quiz" aria-live="polite">
+          <div class="question-image">
+            <img id="cardImage" src="./assets/all.png" alt="">
           </div>
-          <h2 id="questionText"></h2>
-          <div class="options" id="options"></div>
-          <div class="answer" id="answerBox">
-            <p class="answer-title" id="answerTitle"></p>
-            <p id="answerText"></p>
-            <p class="practice" id="practiceText"></p>
-            <p class="source" id="sourceText"></p>
-          </div>
-          <div class="actions">
-            <button class="ghost" id="backButton" type="button">Zurück</button>
-            <button class="primary" id="nextButton" type="button">Weiter</button>
-          </div>
-        </article>
-      </section>
+          <article class="panel">
+            <p class="quiz-title">Tergar Quiz zum 10-jährigen Jubiläum</p>
+            <div class="progress">
+              <span id="stepText">Frage 1 von 20</span>
+              <span class="category" id="categoryText">Praxis</span>
+            </div>
+            <h2 id="questionText"></h2>
+            <div class="options" id="options"></div>
+            <div class="answer" id="answerBox">
+              <p class="answer-title" id="answerTitle"></p>
+              <p id="answerText"></p>
+              <p class="practice" id="practiceText"></p>
+              <p class="source" id="sourceText"></p>
+            </div>
+            <div class="actions">
+              <button class="ghost" id="backButton" type="button">Zurück</button>
+              <button class="primary" id="nextButton" type="button">Weiter</button>
+            </div>
+          </article>
+        </section>
 
-      <section class="result" id="result">
-        <div class="result-visual" aria-hidden="true"></div>
-        <div class="result-content">
-          <p class="scoreline" id="scoreText"></p>
-          <h2>Vielen Dank fürs Mitmachen.</h2>
-          <p class="result-copy">Das war das Jubiläums-Quiz zum Community Praxistag.</p>
-          <div class="start-row">
-            <button class="primary" id="restartButton" type="button">Noch einmal starten</button>
+        <section class="result" id="result">
+          <div class="result-visual" aria-hidden="true"></div>
+          <div class="result-content">
+            <p class="scoreline" id="scoreText"></p>
+            <h2>Vielen Dank fürs Mitmachen.</h2>
+            <p class="result-copy">Das war das Jubiläums-Quiz zum Community Praxistag.</p>
+            <div class="start-row">
+              <button class="primary" id="restartButton" type="button">Noch einmal starten</button>
+            </div>
           </div>
-        </div>
-      </section>
-    </main>
+        </section>
+      </main>
+    </div>
 
     <script>
       const cards = [
@@ -832,7 +895,29 @@
       let answered = false;
       let score = 0;
 
+      // Stage proportional ins Fenster skalieren (Breite und Hoehe gemeinsam)
+      const DESIGN_W = 1180;
+      const DESIGN_H = 760;
+
+      function fitStage() {
+        const root = document.documentElement;
+        if (window.matchMedia("(max-width: 860px)").matches) {
+          root.style.setProperty("--scale", "1");
+          return;
+        }
+        const margin = 28;
+        const scaleW = (window.innerWidth - margin) / DESIGN_W;
+        const scaleH = (window.innerHeight - margin) / DESIGN_H;
+        let scale = Math.min(scaleW, scaleH);
+        scale = Math.max(0.45, Math.min(scale, 1.4));
+        root.style.setProperty("--scale", scale.toFixed(4));
+      }
+
+      window.addEventListener("resize", fitStage);
+      window.addEventListener("orientationchange", fitStage);
+
       function showQuiz() {
+        intro.classList.remove("is-active");
         intro.style.display = "none";
         result.classList.remove("is-active");
         quiz.classList.add("is-active");
@@ -844,12 +929,14 @@
       function renderCard() {
         const card = cards[current];
         answered = false;
+        quiz.classList.remove("is-answered");
         stepText.textContent = `Frage ${current + 1} von ${cards.length}`;
         categoryText.textContent = card.category;
         questionText.textContent = card.question;
         cardImage.src = card.image;
         questionImage.classList.toggle("logo-card", card.imageMode === "logo");
         answerBox.classList.remove("is-visible");
+        answerBox.scrollTop = 0;
         answerTitle.textContent = "";
         answerText.textContent = "";
         practiceText.textContent = "";
@@ -871,6 +958,7 @@
       function chooseAnswer(index) {
         if (answered) return;
         answered = true;
+        quiz.classList.add("is-answered");
         const card = cards[current];
         const allOptions = [...options.querySelectorAll(".option")];
         allOptions.forEach((button, optionIndex) => {
@@ -895,6 +983,7 @@
         }
 
         quiz.classList.remove("is-active");
+        quiz.classList.remove("is-answered");
         result.classList.add("is-active");
         scoreText.textContent = `${score} von ${cards.length} Fragen richtig beantwortet`;
       }
@@ -909,6 +998,8 @@
       restartButton.addEventListener("click", showQuiz);
       nextButton.addEventListener("click", nextCard);
       backButton.addEventListener("click", previousCard);
+
+      fitStage();
     </script>
   </body>
 </html>
