@@ -3,7 +3,16 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tergar Praxistag Quiz</title>
+    <title>Tergar Quiz · 10 Jahre Community Praxistag</title>
+    <meta name="description" content="Ein interaktives Quiz zum 10-jährigen Jubiläum von Tergar im deutschsprachigen Raum. 20 Fragen rund um Tergar, Mingyur Rinpoche, Meditation und Wissenschaft.">
+    <link rel="icon" href="./assets/joy-symbol-gold.png" type="image/png">
+    <!-- Link-Vorschau (WhatsApp, Zoom-Chat, Mail) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Tergar Quiz · 10 Jahre Community Praxistag">
+    <meta property="og:description" content="Feiere mit uns 10 Jahre Tergar. Ein kleines Quiz zum gemeinsamen Mitraten und Schmunzeln.">
+    <meta property="og:image" content="https://looselystraight.github.io/tergar-jubilaeumsquiz/assets/rinpoche.jpg">
+    <meta property="og:url" content="https://looselystraight.github.io/tergar-jubilaeumsquiz/">
+    <meta name="twitter:card" content="summary_large_image">
     <style>
       @font-face {
         font-family: "Nunito Sans";
@@ -106,6 +115,81 @@
         padding: 6px 12px;
         background: #ffffff;
         white-space: nowrap;
+      }
+
+      .soundtoggle {
+        border: 1px solid rgba(66, 74, 88, 0.16);
+        border-radius: 999px;
+        padding: 6px 12px;
+        background: #ffffff;
+        color: var(--text);
+        font-size: 13px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .soundtoggle:hover,
+      .soundtoggle:focus-visible {
+        outline: 3px solid rgba(227, 159, 36, 0.28);
+      }
+
+      /* Fortschrittsbalken */
+      .progressbar {
+        flex: none;
+        height: 6px;
+        border-radius: 999px;
+        background: rgba(66, 74, 88, 0.12);
+        overflow: hidden;
+        margin: 10px 0 14px;
+      }
+
+      .progressbar-fill {
+        height: 100%;
+        width: 0;
+        background: var(--gold);
+        border-radius: 999px;
+        transition: width 0.25s ease;
+      }
+
+      /* Mehr erfahren auf tergar.de */
+      .morelink {
+        display: none;
+        flex: none;
+        margin-top: 12px;
+        font-weight: 700;
+        color: var(--gold);
+        text-decoration: none;
+      }
+
+      .morelink.is-visible {
+        display: inline-block;
+      }
+
+      .morelink:hover,
+      .morelink:focus-visible {
+        text-decoration: underline;
+      }
+
+      .result-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .result-links a {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(66, 74, 88, 0.18);
+        border-radius: 6px;
+        padding: 10px 16px;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .result-links a:hover,
+      .result-links a:focus-visible {
+        outline: 3px solid rgba(227, 159, 36, 0.28);
       }
 
       .hero {
@@ -531,6 +615,7 @@
             <span class="event-pill">Community Praxistag</span>
             <span class="event-pill">28. Juni 2026</span>
             <span class="event-pill">Online</span>
+            <button class="soundtoggle" id="soundToggle" type="button" aria-pressed="true" title="Klangschale an/aus">🔔 Ton an</button>
           </div>
         </header>
 
@@ -558,6 +643,9 @@
               <span id="stepText">Frage 1 von 20</span>
               <span class="category" id="categoryText">Praxis</span>
             </div>
+            <div class="progressbar" aria-hidden="true">
+              <div class="progressbar-fill" id="progressFill"></div>
+            </div>
             <h2 id="questionText"></h2>
             <div class="options" id="options"></div>
             <div class="answer" id="answerBox">
@@ -566,6 +654,7 @@
               <p class="practice" id="practiceText"></p>
               <p class="source" id="sourceText"></p>
             </div>
+            <a class="morelink" id="moreLink" href="https://www.tergar.de" target="_blank" rel="noopener">Mehr erfahren auf tergar.de →</a>
             <div class="actions">
               <button class="ghost" id="backButton" type="button">Zurück</button>
               <button class="primary" id="nextButton" type="button">Weiter</button>
@@ -578,14 +667,20 @@
           <div class="result-content">
             <p class="scoreline" id="scoreText"></p>
             <h2>Vielen Dank fürs Mitmachen.</h2>
-            <p class="result-copy">Das war das Jubiläums-Quiz zum Community Praxistag.</p>
+            <p class="result-copy" id="resultCopy">Das war das Jubiläums-Quiz zum Community Praxistag. Schön, dass du dabei warst.</p>
             <div class="start-row">
               <button class="primary" id="restartButton" type="button">Noch einmal starten</button>
+            </div>
+            <div class="result-links">
+              <a href="https://www.tergar.de" target="_blank" rel="noopener">Tergar kennenlernen</a>
+              <a href="https://www.tergar.de/community/praxisgruppe-finden" target="_blank" rel="noopener">Praxisgruppe finden</a>
             </div>
           </div>
         </section>
       </main>
     </div>
+
+    <audio id="bellSound" src="./assets/klangschale.mp3" preload="auto"></audio>
 
     <script>
       const cards = [
@@ -890,10 +985,31 @@
       const answerText = document.querySelector("#answerText");
       const practiceText = document.querySelector("#practiceText");
       const sourceText = document.querySelector("#sourceText");
+      const progressFill = document.querySelector("#progressFill");
+      const moreLink = document.querySelector("#moreLink");
+      const resultCopy = document.querySelector("#resultCopy");
+      const soundToggle = document.querySelector("#soundToggle");
+      const bellSound = document.querySelector("#bellSound");
 
       let current = 0;
       let answered = false;
       let score = 0;
+      let soundOn = true;
+
+      // "Mehr erfahren" verweist je Kategorie auf die passende deutsche Tergar-Seite
+      const moreLinks = {
+        "Bedeutung": "https://www.tergar.de/ueber-uns/uber-tergar",
+        "Geschichte": "https://www.tergar.de/ueber-uns/uber-tergar",
+        "Community": "https://www.tergar.de/community/praxisgruppe-finden",
+        "Mission": "https://www.tergar.de/ueber-uns/uber-tergar",
+        "Rinpoche": "https://www.tergar.de/yongey-mingyur-rinpoche",
+        "Wissenschaft": "https://www.tergar.de/meditieren-lernen/was-meditation-bewirkt",
+        "Praxis": "https://www.tergar.de/wie-beginne-ich",
+        "Analogie": "https://www.tergar.de/wie-beginne-ich",
+        "Joy of Living": "https://www.tergar.de/kurse-events/kurse-fur-die-vertiefung",
+        "Grundlegende Güte": "https://www.tergar.de/meditieren-lernen/was-meditation-bewirkt",
+        "Metapher": "https://www.tergar.de/yongey-mingyur-rinpoche"
+      };
 
       // Stage proportional ins Fenster skalieren (Breite und Hoehe gemeinsam)
       const DESIGN_W = 1180;
@@ -941,6 +1057,8 @@
         answerText.textContent = "";
         practiceText.textContent = "";
         sourceText.textContent = "";
+        moreLink.classList.remove("is-visible");
+        progressFill.style.width = `${((current + 1) / cards.length) * 100}%`;
         options.innerHTML = "";
         backButton.disabled = current === 0;
         nextButton.textContent = current === cards.length - 1 ? "Ergebnis" : "Weiter";
@@ -972,7 +1090,23 @@
         answerText.textContent = card.answer;
         practiceText.textContent = card.practice;
         sourceText.textContent = "";
+
+        const url = moreLinks[card.category];
+        if (url) {
+          moreLink.href = url;
+          moreLink.classList.add("is-visible");
+        }
+
         answerBox.classList.add("is-visible");
+        playBell();
+      }
+
+      function playBell() {
+        if (!soundOn || !bellSound) return;
+        try {
+          bellSound.currentTime = 0;
+          bellSound.play().catch(() => {});
+        } catch (e) {}
       }
 
       function nextCard() {
@@ -986,6 +1120,18 @@
         quiz.classList.remove("is-answered");
         result.classList.add("is-active");
         scoreText.textContent = `${score} von ${cards.length} Fragen richtig beantwortet`;
+
+        const quote = score / cards.length;
+        let copy;
+        if (quote >= 0.8) {
+          copy = "Stark. Du kennst Tergar richtig gut. Schön, dass du dabei warst.";
+        } else if (quote >= 0.5) {
+          copy = "Schön gemacht. Vielleicht war ja auch ein neuer Aha-Moment dabei.";
+        } else {
+          copy = "Klasse, dass du mitgemacht hast. Das Schöne am Weg ist das Entdecken, nicht das Wissen.";
+        }
+        resultCopy.textContent = copy;
+        playBell();
       }
 
       function previousCard() {
@@ -998,6 +1144,47 @@
       restartButton.addEventListener("click", showQuiz);
       nextButton.addEventListener("click", nextCard);
       backButton.addEventListener("click", previousCard);
+
+      // Klangschale an/aus
+      soundToggle.addEventListener("click", () => {
+        soundOn = !soundOn;
+        soundToggle.setAttribute("aria-pressed", String(soundOn));
+        soundToggle.textContent = soundOn ? "🔔 Ton an" : "🔕 Ton aus";
+      });
+
+      // Tastatursteuerung (hilfreich beim moderierten Bildschirm-Teilen)
+      document.addEventListener("keydown", (event) => {
+        const introVisible = intro.style.display !== "none" && intro.classList.contains("is-active");
+        const quizVisible = quiz.classList.contains("is-active");
+        const resultVisible = result.classList.contains("is-active");
+
+        if (introVisible && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          showQuiz();
+          return;
+        }
+        if (resultVisible && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          showQuiz();
+          return;
+        }
+        if (!quizVisible) return;
+
+        if (["1", "2", "3"].includes(event.key)) {
+          const idx = Number(event.key) - 1;
+          const btn = options.querySelectorAll(".option")[idx];
+          if (btn) btn.click();
+        } else if (event.key === "ArrowRight" || event.key === " ") {
+          event.preventDefault();
+          nextCard();
+        } else if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          previousCard();
+        } else if (event.key === "Enter") {
+          event.preventDefault();
+          nextCard();
+        }
+      });
 
       fitStage();
     </script>
