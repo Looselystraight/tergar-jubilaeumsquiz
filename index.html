@@ -95,6 +95,10 @@
         border-bottom: 1px solid rgba(66, 74, 88, 0.12);
       }
 
+      .on-quiz .topbar {
+        display: none;
+      }
+
       .logo {
         width: 320px;
         min-width: 130px;
@@ -382,7 +386,7 @@
 
       .question-image {
         flex: none;
-        height: 165px;
+        height: 210px;
         overflow: hidden;
         border-radius: 4px 4px 0 0;
         background: #ffffff;
@@ -393,7 +397,7 @@
 
       .question-image img {
         object-fit: cover;
-        object-position: center;
+        object-position: center top;
       }
 
       .question-image.logo-card {
@@ -430,15 +434,33 @@
         font-weight: 700;
       }
 
-      .quiz-title,
+      .quizmeta,
+      .progressbar,
       h2 {
         flex: none;
       }
 
+      .quizmeta {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 12px;
+        margin-bottom: 6px;
+      }
+
+      .quizmeta-right {
+        display: flex;
+        gap: 14px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
       .quiz-title {
-        margin: 0 0 10px;
+        margin: 0;
         color: var(--text);
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 700;
       }
 
@@ -726,18 +748,17 @@
         </section>
 
         <section class="quiz" id="quiz" aria-live="polite">
+          <div class="quizmeta">
+            <span class="quiz-title">Tergar Quiz zum 10-jährigen Jubiläum</span>
+            <span class="quizmeta-right"><span id="stepText">Frage 1 von 23</span><span class="category" id="categoryText">Praxis</span></span>
+          </div>
+          <div class="progressbar" aria-hidden="true">
+            <div class="progressbar-fill" id="progressFill"></div>
+          </div>
           <div class="question-image">
             <img id="cardImage" src="./assets/all.png" alt="">
           </div>
           <article class="panel">
-            <p class="quiz-title">Tergar Quiz zum 10-jährigen Jubiläum</p>
-            <div class="progress">
-              <span id="stepText">Frage 1 von 20</span>
-              <span class="category" id="categoryText">Praxis</span>
-            </div>
-            <div class="progressbar" aria-hidden="true">
-              <div class="progressbar-fill" id="progressFill"></div>
-            </div>
             <h2 id="questionText"></h2>
             <div class="options" id="options"></div>
             <div class="answer" id="answerBox">
@@ -1192,6 +1213,7 @@
         intro.style.display = "none";
         result.classList.remove("is-active");
         quiz.classList.add("is-active");
+        document.body.classList.add("on-quiz");
         current = 0;
         score = 0;
         renderCard();
@@ -1287,6 +1309,7 @@
 
         quiz.classList.remove("is-active");
         quiz.classList.remove("is-answered");
+        document.body.classList.remove("on-quiz");
         result.classList.add("is-active");
         scoreText.textContent = `${score} von ${cards.length} Fragen richtig beantwortet`;
 
