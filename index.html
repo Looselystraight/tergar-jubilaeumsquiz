@@ -267,9 +267,31 @@
 
       .modal-actions {
         display: flex;
-        justify-content: flex-end;
+        align-items: center;
         gap: 12px;
         margin-top: 20px;
+      }
+
+      .modal-video {
+        display: none;
+        align-items: center;
+        gap: 6px;
+        color: var(--gold);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .modal-video.is-visible {
+        display: inline-flex;
+      }
+
+      .modal-video:hover,
+      .modal-video:focus-visible {
+        text-decoration: underline;
+      }
+
+      #mNext {
+        margin-left: auto;
       }
 
       .hero {
@@ -822,6 +844,7 @@
           <p class="practice" id="mPractice"></p>
         </div>
         <div class="modal-actions">
+          <a class="modal-video" id="mVideo" href="#" target="_blank" rel="noopener"><span aria-hidden="true">▶</span> Video ansehen</a>
           <button class="primary" id="mNext" type="button">Weiter</button>
         </div>
       </div>
@@ -931,6 +954,7 @@
                       category: "Rinpoche",
                       image: "./assets/quiz-frame-07.jpg",
                       question: "Wie lange dauerte Mingyur Rinpoches berühmtes „Wander-Retreat“, während dessen er unerkannt als Bettler lebte?",
+                      video: "https://www.youtube.com/watch?v=M8LTothBKqE",
                       options: [
                               "1 Jahr",
                               "4 Jahre",
@@ -1029,6 +1053,7 @@
                       category: "Praxis",
                       image: "./assets/quiz-frame-13.jpg",
                       question: "Was ist laut Mingyur Rinpoche der beste Weg, mit dem „Affengeist“, also unruhigen Gedanken, umzugehen?",
+                      video: "https://www.youtube.com/watch?v=jVtFp9ssglA",
                       options: [
                               "Ihn vollständig ignorieren",
                               "Ihm einen „Job“ geben",
@@ -1183,6 +1208,7 @@
       const mPractice = document.querySelector("#mPractice");
       const mNext = document.querySelector("#mNext");
       const mClose = document.querySelector("#mClose");
+      const mVideo = document.querySelector("#mVideo");
 
       let current = 0;
       let answered = false;
@@ -1287,14 +1313,21 @@
           index === card.correct ? "Richtig." : "Fast.",
           card.answer,
           card.practice,
+          card.video,
           isLast ? "Ergebnis" : "Weiter"
         );
       }
 
-      function openModal(title, text, practice, nextLabel) {
+      function openModal(title, text, practice, video, nextLabel) {
         mTitle.textContent = title;
         mText.textContent = text;
         mPractice.textContent = practice || "";
+        if (video) {
+          mVideo.href = video;
+          mVideo.classList.add("is-visible");
+        } else {
+          mVideo.classList.remove("is-visible");
+        }
         mNext.textContent = nextLabel;
         const body = answerModal.querySelector(".modal-body");
         if (body) body.scrollTop = 0;
