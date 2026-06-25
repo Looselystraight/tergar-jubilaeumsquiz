@@ -884,7 +884,7 @@
               <p class="practice" id="practiceText"></p>
               <p class="source" id="sourceText"></p>
             </div>
-            <a class="morelink" id="moreLink" href="https://www.tergar.de" target="_blank" rel="noopener">Mehr erfahren auf tergar.de →</a>
+            <a class="morelink" id="moreLink" href="https://www.tergar.de">Mehr erfahren auf tergar.de →</a>
             <div class="actions">
               <button class="ghost" id="backButton" type="button">Zurück</button>
               <button class="primary" id="nextButton" type="button">Weiter</button>
@@ -904,16 +904,16 @@
               <button class="primary" id="restartButton" type="button">Noch einmal starten</button>
             </div>
             <div class="result-links">
-              <a href="https://www.tergar.de" target="_blank" rel="noopener">Tergar kennenlernen</a>
-              <a href="https://www.tergar.de/community/praxisgruppe-finden" target="_blank" rel="noopener">Praxisgruppe finden</a>
-              <a href="https://www.youtube.com/channel/UCc7fQNrRef0_6O_S5YAIohg" target="_blank" rel="noopener">▶ Tergar YouTube-Kanal</a>
+              <a href="https://www.tergar.de">Tergar kennenlernen</a>
+              <a href="https://www.tergar.de/community/praxisgruppe-finden">Praxisgruppe finden</a>
+              <a href="https://www.youtube.com/channel/UCc7fQNrRef0_6O_S5YAIohg">▶ Tergar YouTube-Kanal</a>
             </div>
             <div class="video-tips">
               <h3>▶ Video-Tipps von Tergar</h3>
               <ul>
-                <li><a href="https://www.youtube.com/watch?v=M8LTothBKqE" target="_blank" rel="noopener">Wandering… But Not Lost! – Trailer zum Wander-Retreat</a></li>
-                <li><a href="https://www.youtube.com/watch?v=jVtFp9ssglA" target="_blank" rel="noopener">Give the Monkey Mind a Job – dem Affengeist eine Aufgabe geben (ca. 1 Min.)</a></li>
-                <li><a href="https://www.youtube.com/watch?v=dGQ2mxjkb2E" target="_blank" rel="noopener">My Story – Mingyur Rinpoche über Panikattacken</a></li>
+                <li><a href="https://www.youtube.com/watch?v=M8LTothBKqE">Wandering… But Not Lost! – Trailer zum Wander-Retreat</a></li>
+                <li><a href="https://www.youtube.com/watch?v=jVtFp9ssglA">Give the Monkey Mind a Job – dem Affengeist eine Aufgabe geben (ca. 1 Min.)</a></li>
+                <li><a href="https://www.youtube.com/watch?v=dGQ2mxjkb2E">My Story – Mingyur Rinpoche über Panikattacken</a></li>
               </ul>
             </div>
           </div>
@@ -934,7 +934,7 @@
           <p class="practice" id="mPractice"></p>
         </div>
         <div class="modal-actions">
-          <a class="modal-video" id="mVideo" href="#" target="_blank" rel="noopener"><span aria-hidden="true">▶</span> Video ansehen</a>
+          <a class="modal-video" id="mVideo" href="#"><span aria-hidden="true">▶</span> Video ansehen</a>
           <button class="primary" id="mNext" type="button">Weiter</button>
         </div>
       </div>
@@ -1302,6 +1302,47 @@
       let answered = false;
       let score = 0;
       let soundOn = true;
+      let lastChoice = -1;
+
+      // Quiz-Stand sichern, damit die Zurueck-Taste des Browsers wieder ins Quiz fuehrt
+      function saveState() {
+        try {
+          let view = "intro";
+          if (result.classList.contains("is-active")) view = "result";
+          else if (quiz.classList.contains("is-active")) view = "quiz";
+          sessionStorage.setItem(
+            "tergarQuizState",
+            JSON.stringify({ view: view, current: current, score: score, answered: answered, choice: lastChoice })
+          );
+        } catch (e) {}
+      }
+
+      function restoreState() {
+        let s = null;
+        try {
+          s = JSON.parse(sessionStorage.getItem("tergarQuizState"));
+        } catch (e) {}
+        if (!s || s.view === "intro") return false;
+        current = s.current || 0;
+        score = s.score || 0;
+        if (s.view === "result") {
+          renderResult();
+          return true;
+        }
+        if (s.view === "quiz") {
+          intro.classList.remove("is-active");
+          intro.style.display = "none";
+          result.classList.remove("is-active");
+          quiz.classList.add("is-active");
+          document.body.classList.add("on-quiz");
+          renderCard();
+          if (s.answered && typeof s.choice === "number" && s.choice >= 0) {
+            applyAnswer(s.choice, false);
+          }
+          return true;
+        }
+        return false;
+      }
 
       // "Mehr erfahren" verweist je Kategorie auf die passende deutsche Tergar-Seite
       const moreLinks = {
@@ -1360,11 +1401,13 @@
         score = 0;
         renderCard();
         playBell();
+        saveState();
       }
 
       function renderCard() {
         const card = cards[current];
         answered = false;
+        lastChoice = -1;
         closeModal();
         quiz.classList.remove("is-answered");
         stepText.textContent = `Frage ${current + 1} von ${cards.length}`;
@@ -1397,7 +1440,13 @@
 
       function chooseAnswer(index) {
         if (answered) return;
+        applyAnswer(index, true);
+        saveState();
+      }
+
+      function applyAnswer(index, addScore) {
         answered = true;
+        lastChoice = index;
         quiz.classList.add("is-answered");
         const card = cards[current];
         const allOptions = [...options.querySelectorAll(".option")];
@@ -1406,7 +1455,7 @@
           button.classList.toggle("is-wrong", optionIndex === index && index !== card.correct);
         });
 
-        if (index === card.correct) score += 1;
+        if (addScore && index === card.correct) score += 1;
 
         const isLast = current === cards.length - 1;
         openModal(
@@ -1454,9 +1503,17 @@
         if (current < cards.length - 1) {
           current += 1;
           renderCard();
+          saveState();
           return;
         }
+        renderResult();
+        playBell();
+        saveState();
+      }
 
+      function renderResult() {
+        intro.classList.remove("is-active");
+        intro.style.display = "none";
         quiz.classList.remove("is-active");
         quiz.classList.remove("is-answered");
         document.body.classList.remove("on-quiz");
@@ -1474,13 +1531,13 @@
         }
         resultCopy.textContent = copy;
         fitStage();
-        playBell();
       }
 
       function previousCard() {
         if (current === 0) return;
         current -= 1;
         renderCard();
+        saveState();
       }
 
       startButton.addEventListener("click", showQuiz);
@@ -1556,7 +1613,15 @@
         }
       });
 
+      // Beim Laden: falls der Browser die Seite neu laedt (z. B. nach Zurueck aus einem Link),
+      // den letzten Quiz-Stand wiederherstellen statt zur Startseite zu springen.
+      restoreState();
       fitStage();
+
+      // Beim Zurueckkehren aus dem Verlauf (bfcache) Groesse neu berechnen.
+      window.addEventListener("pageshow", function () {
+        fitStage();
+      });
     </script>
   </body>
 </html>
