@@ -84,6 +84,18 @@
         transform-origin: center center;
       }
 
+      /* Abschlussseite: normaler Fluss mit Scrollen statt Skalierung */
+      body.result-scroll .viewport {
+        position: static;
+        display: block;
+        overflow: visible;
+      }
+
+      body.result-scroll .shell {
+        margin: 0 auto;
+        transform: none;
+      }
+
       .topbar {
         flex: none;
         display: flex;
@@ -238,6 +250,12 @@
         font-size: 12px;
         color: rgba(66, 74, 88, 0.7);
         margin: 8px 0 0;
+      }
+
+      .video-tips .vt-note a {
+        color: rgba(66, 74, 88, 0.9);
+        font-weight: 600;
+        text-decoration: underline;
       }
 
       /* Antwort-Pop-up (liegt ueber der skalierten Karte, nutzt echte Fenstergroesse) */
@@ -742,6 +760,13 @@
           display: grid;
         }
 
+        .soundtoggle {
+          top: auto;
+          bottom: 16px;
+          right: 16px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+        }
+
         .logo {
           width: min(100%, 390px);
         }
@@ -864,6 +889,7 @@
             <div class="result-links">
               <a href="https://www.tergar.de" target="_blank" rel="noopener">Tergar kennenlernen</a>
               <a href="https://www.tergar.de/community/praxisgruppe-finden" target="_blank" rel="noopener">Praxisgruppe finden</a>
+              <a href="https://www.youtube.com/channel/UCc7fQNrRef0_6O_S5YAIohg" target="_blank" rel="noopener">▶ Tergar YouTube-Kanal</a>
             </div>
             <div class="video-tips">
               <h3>▶ Video-Tipps von Tergar</h3>
@@ -872,8 +898,11 @@
                 <li><a href="https://www.youtube.com/watch?v=jVtFp9ssglA" target="_blank" rel="noopener">Give the Monkey Mind a Job – dem Affengeist eine Aufgabe geben (ca. 1 Min.)</a></li>
                 <li><a href="https://www.youtube.com/watch?v=R_OpWjYVlkY" target="_blank" rel="noopener">Discover the New Joy of Living – das Übungsprogramm</a></li>
                 <li><a href="https://www.youtube.com/watch?v=x3R0gVvnMWE" target="_blank" rel="noopener">Mingyur Rinpoches Vision für Tergar</a></li>
+                <li><a href="https://www.youtube.com/watch?v=Yo4WC9tU8Nc" target="_blank" rel="noopener">How Meditation Changes the Brain – Meditation und Gehirn</a></li>
+                <li><a href="https://www.youtube.com/watch?v=3MIA5Z_tO0k" target="_blank" rel="noopener">The Causes of Happiness – die Ursachen von Glück</a></li>
+                <li><a href="https://www.youtube.com/watch?v=dGQ2mxjkb2E" target="_blank" rel="noopener">My Story – Mingyur Rinpoche über Panikattacken</a></li>
               </ul>
-              <p class="vt-note">Offizielle Tergar-Kanäle, teils auf Englisch.</p>
+              <p class="vt-note">Mehr auf dem <a href="https://www.youtube.com/channel/UCc7fQNrRef0_6O_S5YAIohg" target="_blank" rel="noopener">deutschen Tergar-Kanal</a> und unter <a href="https://deutsch.tergar.org/medien/videos/" target="_blank" rel="noopener">deutsch.tergar.org</a>. Einige Videos sind auf Englisch.</p>
             </div>
           </div>
         </section>
@@ -1288,9 +1317,17 @@
       function fitStage() {
         const root = document.documentElement;
         if (window.matchMedia("(max-width: 860px)").matches) {
+          document.body.classList.remove("result-scroll");
           root.style.setProperty("--scale", "1");
           return;
         }
+        // Abschlussseite ist inhaltsreich: nicht skalieren, sondern normal scrollen lassen
+        if (result.classList.contains("is-active")) {
+          document.body.classList.add("result-scroll");
+          root.style.setProperty("--scale", "1");
+          return;
+        }
+        document.body.classList.remove("result-scroll");
         root.style.setProperty("--scale", "1");
         const w = shellEl.offsetWidth || DESIGN_W;
         const h = shellEl.offsetHeight || 700;
