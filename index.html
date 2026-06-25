@@ -201,6 +201,45 @@
         outline: 3px solid rgba(227, 159, 36, 0.28);
       }
 
+      .video-tips {
+        margin-top: 22px;
+        text-align: left;
+      }
+
+      .video-tips h3 {
+        font-size: 14px;
+        font-weight: 700;
+        margin: 0 0 10px;
+        color: var(--text);
+      }
+
+      .video-tips ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 8px;
+      }
+
+      .video-tips a {
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .video-tips a:hover,
+      .video-tips a:focus-visible {
+        text-decoration: underline;
+        outline: none;
+      }
+
+      .video-tips .vt-note {
+        font-size: 12px;
+        color: rgba(66, 74, 88, 0.7);
+        margin: 8px 0 0;
+      }
+
       /* Antwort-Pop-up (liegt ueber der skalierten Karte, nutzt echte Fenstergroesse) */
       .modal-overlay {
         position: fixed;
@@ -825,6 +864,16 @@
             <div class="result-links">
               <a href="https://www.tergar.de" target="_blank" rel="noopener">Tergar kennenlernen</a>
               <a href="https://www.tergar.de/community/praxisgruppe-finden" target="_blank" rel="noopener">Praxisgruppe finden</a>
+            </div>
+            <div class="video-tips">
+              <h3>▶ Video-Tipps von Tergar</h3>
+              <ul>
+                <li><a href="https://www.youtube.com/watch?v=M8LTothBKqE" target="_blank" rel="noopener">Wandering… But Not Lost! – Trailer zum Wander-Retreat</a></li>
+                <li><a href="https://www.youtube.com/watch?v=jVtFp9ssglA" target="_blank" rel="noopener">Give the Monkey Mind a Job – dem Affengeist eine Aufgabe geben (ca. 1 Min.)</a></li>
+                <li><a href="https://www.youtube.com/watch?v=R_OpWjYVlkY" target="_blank" rel="noopener">Discover the New Joy of Living – das Übungsprogramm</a></li>
+                <li><a href="https://www.youtube.com/watch?v=x3R0gVvnMWE" target="_blank" rel="noopener">Mingyur Rinpoches Vision für Tergar</a></li>
+              </ul>
+              <p class="vt-note">Offizielle Tergar-Kanäle, teils auf Englisch.</p>
             </div>
           </div>
         </section>
