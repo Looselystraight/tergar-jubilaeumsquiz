@@ -213,6 +213,40 @@
         outline: 3px solid rgba(227, 159, 36, 0.28);
       }
 
+      .exchange {
+        margin-top: 14px;
+        text-align: left;
+      }
+
+      .exchange-intro {
+        margin: 0 0 8px;
+        font-weight: 700;
+      }
+
+      .exchange ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 6px;
+      }
+
+      .exchange li {
+        position: relative;
+        padding-left: 20px;
+      }
+
+      .exchange li::before {
+        content: "•";
+        position: absolute;
+        left: 2px;
+        top: -0.05em;
+        color: var(--gold);
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 1.2;
+      }
+
       .video-tips {
         margin-top: 22px;
         text-align: left;
@@ -898,8 +932,14 @@
             <p class="scoreline" id="scoreText"></p>
             <h2>Vielen Dank fürs Mitmachen.</h2>
             <p class="result-copy" id="resultCopy">Das war das Jubiläums-Quiz zum Community Praxistag. Schön, dass du dabei warst.</p>
-            <p class="result-fun"><span class="rocket" aria-hidden="true">🚀</span> Auf die nächsten zehn Jahre!</p>
-            <p class="result-copy">Nutzt jetzt gerne die Zeit, um euch auszutauschen.</p>
+            <div class="exchange">
+              <p class="exchange-intro">Nutzt jetzt gerne die Zeit, um euch auszutauschen. Was nimmst du aus zehn Jahren Tergar Deutschland mit?</p>
+              <ul>
+                <li>Was verbindest du persönlich mit gemeinsamer Praxis?</li>
+                <li>Was verbindet dich mit Tergar?</li>
+                <li>Wie bist du zur Meditation gekommen?</li>
+              </ul>
+            </div>
             <div class="start-row">
               <button class="primary" id="restartButton" type="button">Noch einmal starten</button>
             </div>
