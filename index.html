@@ -122,6 +122,10 @@
       }
 
       .soundtoggle {
+        position: fixed;
+        top: 14px;
+        right: 16px;
+        z-index: 60;
         border: 1px solid rgba(66, 74, 88, 0.16);
         border-radius: 999px;
         padding: 6px 12px;
@@ -130,6 +134,7 @@
         font-size: 13px;
         cursor: pointer;
         white-space: nowrap;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
       }
 
       .soundtoggle:hover,
@@ -759,7 +764,6 @@
             <span class="event-pill">Community Praxistag</span>
             <span class="event-pill">28. Juni 2026</span>
             <span class="event-pill">Online</span>
-            <button class="soundtoggle" id="soundToggle" type="button" aria-pressed="true" title="Klangschale an/aus">🔔 Ton an</button>
           </div>
         </header>
 
@@ -826,6 +830,8 @@
         </section>
       </main>
     </div>
+
+    <button class="soundtoggle" id="soundToggle" type="button" aria-pressed="true" title="Klangschale an/aus">🔔 Ton an</button>
 
     <audio id="bellSound" src="./assets/klangschale.mp3" preload="auto"></audio>
 
@@ -1398,7 +1404,9 @@
         soundOn = !soundOn;
         soundToggle.setAttribute("aria-pressed", String(soundOn));
         soundToggle.textContent = soundOn ? "🔔 Ton an" : "🔕 Ton aus";
-        if (!soundOn && bellSound) {
+        if (soundOn) {
+          playBell();
+        } else if (bellSound) {
           try {
             bellSound.pause();
             bellSound.currentTime = 0;
