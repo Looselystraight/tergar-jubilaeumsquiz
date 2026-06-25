@@ -76,7 +76,7 @@
 
       .shell {
         width: 1180px;
-        height: 760px;
+        height: auto;
         padding: 18px 24px 22px;
         display: flex;
         flex-direction: column;
@@ -394,11 +394,10 @@
 
       .quiz {
         display: none;
-        flex: 1;
-        min-height: 0;
+        flex: none;
         width: min(1040px, 100%);
         margin: 0 auto;
-        padding-top: 16px;
+        padding-top: 6px;
       }
 
       .quiz.is-active {
@@ -408,18 +407,21 @@
 
       .question-image {
         flex: none;
-        height: 210px;
+        width: 100%;
+        aspect-ratio: 1600 / 520;
+        height: auto;
+        max-height: 280px;
         overflow: hidden;
         border-radius: 4px 4px 0 0;
-        background: #ffffff;
+        background: #f1efe8;
         border: 1px solid rgba(66, 74, 88, 0.12);
         border-bottom: 0;
         position: relative;
       }
 
       .question-image img {
-        object-fit: cover;
-        object-position: center top;
+        object-fit: contain;
+        object-position: center;
       }
 
       .question-image.logo-card {
@@ -436,8 +438,7 @@
       }
 
       .panel {
-        flex: 1;
-        min-height: 0;
+        flex: none;
         padding: 22px 30px 22px;
         border-radius: 0 0 4px 4px;
         background: #ffffff;
@@ -515,13 +516,10 @@
       }
 
       .options {
-        flex: 1 1 auto;
-        min-height: 0;
-        overflow-y: auto;
-        align-content: start;
+        flex: none;
         display: grid;
-        gap: 8px;
-        margin: 10px 0 0;
+        gap: 10px;
+        margin: 12px 0 0;
       }
 
       .option {
@@ -938,7 +936,7 @@
               },
               {
                       category: "Joy of Living",
-                      image: "./assets/jol-pfad.png",
+                      image: "./assets/pfad-boot.png",
                       question: "Welches Programm vertieft bei Tergar den Weg nach Joy of Living?",
                       options: [
                               "Pfad der Befreiung",
@@ -995,7 +993,7 @@
               },
               {
                       category: "Wissenschaft",
-                      image: "./assets/wiss-neuroplastizitaet.jpg",
+                      image: "./assets/neuro-schluessel.png",
                       question: "Wie lautet der wissenschaftliche Begriff für die Fähigkeit des Gehirns, durch Meditation trainiert und physisch verändert zu werden?",
                       options: [
                               "Neuro-Stabilität",
@@ -1234,17 +1232,20 @@
       const DESIGN_W = 1180;
       const DESIGN_H = 760;
 
+      const shellEl = document.querySelector(".shell");
+
       function fitStage() {
         const root = document.documentElement;
         if (window.matchMedia("(max-width: 860px)").matches) {
           root.style.setProperty("--scale", "1");
           return;
         }
-        const margin = 28;
-        const scaleW = (window.innerWidth - margin) / DESIGN_W;
-        const scaleH = (window.innerHeight - margin) / DESIGN_H;
-        let scale = Math.min(scaleW, scaleH);
-        scale = Math.max(0.45, Math.min(scale, 1.4));
+        root.style.setProperty("--scale", "1");
+        const w = shellEl.offsetWidth || DESIGN_W;
+        const h = shellEl.offsetHeight || 700;
+        const margin = 56;
+        let scale = Math.min((window.innerWidth - margin) / w, (window.innerHeight - margin) / h);
+        scale = Math.max(0.4, Math.min(scale, 1.25));
         root.style.setProperty("--scale", scale.toFixed(4));
       }
 
@@ -1293,6 +1294,7 @@
           button.addEventListener("click", () => chooseAnswer(index));
           options.append(button);
         });
+        fitStage();
       }
 
       function chooseAnswer(index) {
@@ -1373,6 +1375,7 @@
           copy = "Klasse, dass du mitgemacht hast. Das Schöne am Weg ist das Entdecken.";
         }
         resultCopy.textContent = copy;
+        fitStage();
         playBell();
       }
 
