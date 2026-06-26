@@ -1491,6 +1491,23 @@
         saveState();
       }
 
+      function showIntro() {
+        closeModal();
+        quiz.classList.remove("is-active");
+        quiz.classList.remove("is-answered");
+        result.classList.remove("is-active");
+        document.body.classList.remove("on-quiz");
+        document.body.classList.remove("result-scroll");
+        intro.style.display = "";
+        intro.classList.add("is-active");
+        current = 0;
+        score = 0;
+        answered = false;
+        lastChoice = -1;
+        saveState();
+        fitStage();
+      }
+
       function renderCard() {
         const card = cards[current];
         answered = false;
@@ -1628,7 +1645,7 @@
       }
 
       startButton.addEventListener("click", showQuiz);
-      restartButton.addEventListener("click", showQuiz);
+      restartButton.addEventListener("click", showIntro);
       nextButton.addEventListener("click", nextCard);
       backButton.addEventListener("click", previousCard);
 
@@ -1667,7 +1684,7 @@
         }
         if (resultVisible && (event.key === "Enter" || event.key === " ")) {
           event.preventDefault();
-          showQuiz();
+          showIntro();
           return;
         }
         if (!quizVisible) return;
