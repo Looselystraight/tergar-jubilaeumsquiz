@@ -946,7 +946,6 @@
           <div class="result-content">
             <p class="scoreline" id="scoreText"></p>
             <h2>Vielen Dank fürs Mitmachen.</h2>
-            <p class="result-copy" id="resultCopy">Das war das Jubiläums-Quiz zum Community Praxistag. Schön, dass du dabei warst.</p>
             <div class="exchange">
               <p class="exchange-intro">Nutzt jetzt gerne die Zeit, um euch auszutauschen. Was nimmst du aus zehn Jahren Tergar Deutschland mit?</p>
               <ul>
@@ -1620,17 +1619,6 @@
         document.body.classList.remove("on-quiz");
         result.classList.add("is-active");
         scoreText.textContent = `${score} von ${cards.length} Fragen richtig beantwortet`;
-
-        const quote = score / cards.length;
-        let copy;
-        if (quote >= 0.8) {
-          copy = "Stark. Du kennst Tergar richtig gut. Schön, dass du dabei warst.";
-        } else if (quote >= 0.5) {
-          copy = "Schön gemacht. Vielleicht war ja auch ein neuer Aha-Moment dabei.";
-        } else {
-          copy = "Klasse, dass du mitgemacht hast.";
-        }
-        resultCopy.textContent = copy;
         fitStage();
       }
 
